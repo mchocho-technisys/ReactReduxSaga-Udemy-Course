@@ -4,21 +4,23 @@ import MainHeader from './components/MainHeader';
 import NewEntryForm from './components/NewEntryForm';
 import DisplayBalance from './components/DisplayBalance';
 import DisplayBalances from './components/DisplayBalances';
-import EntryLine from './components/EntryLine';
 import './App.css';
+import EntryLines from './components/EntryLines';
 
 const INITIAL_STATE = [
   {
+    id: 1,
     title: "Work Income",
     value: 1000.00,
-    isExpense: false,
   },
   {
+    id: 2,
     title: "Water bill",
     value: 200.00,
     isExpense: true,
   },
   {
+    id: 3,
     title: "Wifi bill",
     value: 50.00,
     isExpense: true,
@@ -29,6 +31,21 @@ const INITIAL_STATE = [
 function App() {
   const [entries, setEntries] = useState(INITIAL_STATE);
 
+  const deleteEntry = (id) => {
+    const result = entries.filter((entry) => entry.id !== id);
+    setEntries(result);
+  }
+
+  const addEntry = (title, value, isExpense) => {
+    const result = entries.concat(({
+      id: entries.length+1,
+      title,
+      value,
+      isExpense
+    }));
+    setEntries(result);
+  }
+
 return (
     <Container>
       <MainHeader title="Budget"/>
@@ -36,12 +53,10 @@ return (
       <DisplayBalances />
 
       <MainHeader title="History" type="h3" />
-      {entries && entries.map((entry) => (
-        <EntryLine isExpense={entry.isExpense} title={entry.title} value={entry.value} />
-      ))}      
+      <EntryLines entries={entries} deleteEntry={deleteEntry} />    
 
       <MainHeader title="Add new transaction" type="h3" />
-      <NewEntryForm />
+      <NewEntryForm addEntry={addEntry} />
     </Container>
   );
 }
